@@ -22,7 +22,7 @@ Direction:
 
 [/] Add assets to the project.  
 [/] Create includes directory; create navbar and sidebar.  
-[x] Setup database configuration.  
+[/] Setup database configuration.  
 [x] Create page for List of office.
 [x] Create page for List of employees.  
 [x] Create page for List of transactions.  
