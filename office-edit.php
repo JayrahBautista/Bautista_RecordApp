@@ -19,26 +19,50 @@
 </head>
 
 <body>
+     <?php
+        require('config/config.php');
+        require('config/db.php');
+
+        $name = '';
+        $contactnum = '';
+        $email = '';
+        $address = '';
+        $city = '';
+        $country = '';
+        $postal = '';
+
+        $query = "SELECT * FROM office WHERE  id =" . $_GET['id'];;
+        $result = $conn->query($query);
+
+        if($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $name = $row['name'];
+                $contactnum = $row['contactnum'];
+                $email = $row['email'];
+                $address = $row['address'];
+                $city = $row['city'];
+                $country = $row['country'];
+                $postal = $row['postal'];
+        }
+    }
+
+?>
     <div class="wrapper">
         <div class="sidebar" data-image="../assets/img/sidebar-5.jpg">
             <div class="sidebar-wrapper">
                 <?php include('includes/sidebar.php');?>
-                </ul>
-            </div>
-        </div>
-        <div class="main-panel">
-            <?php include ('includes/navbar.php');?>
-            <?php 
-                require('config/config.php');
-                require('config/db.php');
+                <?php
 
                 if(isset($_POST['submit'])){
-                $lastname =mysqli_real_escape_string($conn,$_POST['lastname']);
-                $firstname =mysqli_real_escape_string($conn,$_POST['firstname']);
-                $office_id =mysqli_real_escape_string($conn,$_POST['office']);
-                $address =mysqli_real_escape_string($conn,$_POST['address']);
+                    $name =mysqli_real_escape_string($conn,$_POST['name']);
+                    $contactnum =mysqli_real_escape_string($conn,$_POST['contactnum']);
+                    $email =mysqli_real_escape_string($conn,$_POST['email']);
+                    $address =mysqli_real_escape_string($conn,$_POST['address']);
+                    $city =mysqli_real_escape_string($conn,$_POST['city']);
+                    $country =mysqli_real_escape_string($conn,$_POST['country']);
+                    $postal =mysqli_real_escape_string($conn,$_POST['postal']);
 
-                $query = "INSERT INTO employee (lastname, firstname, office_id, address) VALUES ('$lastname','$firstname','$office_id','$address')";
+                   $query = "UPDATE office SET name ='".$_POST['name']."', contactnum ='".$_POST['contactnum']."', email='".$_POST['email']."', address='".$_POST['address']."', city='".$_POST['city']."', country='".$_POST['country']."', postal='".$_POST['postal']."' WHERE id=" . $_GET['id'];
 
                     if (mysqli_query($conn, $query)){
 
@@ -47,6 +71,11 @@
                     }
                 }
             ?>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <?php include ('includes/navbar.php');?>
             <div class="content">
                 <div class="container-fluid">
                     <div class="section">
@@ -55,56 +84,62 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Add Employee</h4>
+                                    <h4 class="card-title">Edit Office</h4>
                                 </div>
                                 <div class="card-body">
                                     <form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">
                                         <div class="row">
+                                            <div class="col-md-5 pr-1">
+                                                <div class="form-group">
+                                                    <label>Office Name</label>
+                                                    <input type="text" class="form-control" name="name" value="<?php echo $name ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 px-1">
+                                                <div class="form-group">
+                                                    <label>Contact Number</label>
+                                                    <input type="text" class="form-control" name="contactnum" value="<?php echo $contactnum ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 pl-1">
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Email Address</label>
+                                                    <input type="email" class="form-control" name="email" value="<?php echo $email ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 pr-1">
+                                                <div class="form-group">
+                                                    <label>Address/Building</label>
+                                                    <input type="text" class="form-control" name="address" value="<?php echo $address ?>">
+                                                </div>
+                                            </div>
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
-                                                    <label>Last Name</label>
-                                                    <input type="text" class="form-control" name="lastname">
+                                                    <label>City</label>
+                                                    <input type="text" class="form-control" name="city" value="<?php echo $city ?>">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
-                                                    <label>First Name</label>
-                                                    <input type="text" class="form-control" name="firstname">
+                                                    <label>Country</label>
+                                                    <input type="text" class="form-control" name="country" value="<?php echo $country ?>">
                                                 </div>
                                             </div>
-                                        
-                                        <div class="col-md-4 pl-1">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Office</label>
-                                                <select class="form-control" name="office">
-                                                    <option>
-                                                        Select...
-                                                    </option>
-                                                    <?php
-                                                        $query = "SELECT id, name FROM office";
-                                                        $result =mysqli_query($conn, $query);
-                                                        while ($row = mysqli_fetch_array($result)){
-                                                            echo "<option value=" . $row['id'].">" . $row['name'] . '</option>';
-                                                        }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        </div>
-
-                                         <div class="row">
+                                       <!--  </div>
+                                        <div class="row"> -->
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
-                                                    <label>Address</label>
-                                                    <input type="text" class="form-control" name="address">
+                                                    <label>Postal Code</label>
+                                                    <input type="text" class="form-control" name="postal" value="<?php echo $postal ?>">
                                                 </div>
-                                            
+                                            </div>
+                                        </div>
                                         <button type="submit" 
-                                       name="submit" value="submit" class="btn btn-info btn-fill pull-right">Save</button>
-                                       </div>
+                                       name="submit" value="submit" class="btn btn-info btn-fill pull-right">Update</button>
                                         <div class="clearfix"></div>
                                     </form> 
                                 </div>

@@ -24,7 +24,7 @@ require('config/db.php');
 
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-$results_per_page = 100;
+$results_per_page = 15;
 
 $query="SELECT * FROM employee";
 $result=mysqli_query($conn, $query);
@@ -41,12 +41,12 @@ if (!isset($_GET['page'])) {
 $page_first_result=($page-1) * $results_per_page;
 
 if (strlen($search) > 0) {
-    $query = 'SELECT employee.lastname, employee.firstname,employee.address, office.name as office_name FROM employee, office WHERE employee.office_id = office.id AND employee.address = '.$search.' ORDER BY employee.lastname LIMIT '.$page_first_result.','.$results_per_page; 
+    $query = 'SELECT employee.id, employee.lastname, employee.firstname,employee.address, office.name as office_name FROM employee, office WHERE employee.office_id = office.id AND employee.address = '.$search.' ORDER BY employee.lastname LIMIT '.$page_first_result.','.$results_per_page; 
 }else{
-$query = 'SELECT employee.lastname, employee.firstname,employee.address, office.name as office_name FROM employee, office WHERE employee.office_id = office.id ORDER BY employee.lastname LIMIT '.$page_first_result.','.$results_per_page;
+$query = 'SELECT employee.id, employee.lastname, employee.firstname,employee.address, office.name as office_name FROM employee, office WHERE employee.office_id = office.id ORDER BY employee.lastname LIMIT '.$page_first_result.','.$results_per_page;
 }
 
-$result = mysqli_query($conn, $query)or die( mysqli_error($conn));;
+$result = mysqli_query($conn, $query)or die( mysqli_error($conn));
 
 $employees = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -71,7 +71,7 @@ mysqli_close($conn);
                     <div class="section">
                     </div>
                     <div class="row">
-                                    <div class="content">
+                    <div class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
@@ -89,8 +89,7 @@ mysqli_close($conn);
                                 </a>
                                 </div>
                                 <div class="card-header ">
-                                    <h4 class="card-title">Employees</h4>
-                                    <p class="card-category">Here is a subtitle for this table</p>
+                                    <h4 class="card-title">EMPLOYEES</h4>
                                 </div>
                                 <div class="card-body table-full-width table-responsive">
                                     <table class="table table-hover table-striped">
@@ -99,6 +98,7 @@ mysqli_close($conn);
                                             <th>First Name</th>
                                             <th>Address</th>
                                             <th>Office</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                         <?php foreach($employees as $employee) : ?>
@@ -107,6 +107,12 @@ mysqli_close($conn);
                                         <td><?php echo $employee ['firstname']; ?></td>
                                         <td><?php echo $employee ['address']; ?></td>
                                         <td><?php echo $employee ['office_name']; ?></td>
+                                        <td>
+                                            <a href="employee-edit.php?id=<?php echo $employee['id'] ?>">
+                                            <button type="submit" class="btn 
+                                           btn-warning btn-fill pull-right">Edit</button>
+                                            </a>
+                                        </td>
                                             </tr>
                                             <?php endforeach ?>
                                         </tbody>

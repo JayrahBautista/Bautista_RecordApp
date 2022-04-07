@@ -38,9 +38,13 @@ Direction:
 
 [/] Create search feature in list of transactions.  
 [/] Create search feature in list of office. (challenge)  
-[/] Create search feature in list of employees. (challenge)  
-[x] Edit page for office.  
-[x] Edit page for employees.  
+[/] Create search feature in list of employees. (challenge)
+
+2022-04-06
+[/] Edit page for office.  
+[/] Edit page for employees. 
+
+ 
 [x] Edit page for transactions. (challenge)
 
 ***challenge means not included in the video***
