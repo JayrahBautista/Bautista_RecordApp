@@ -19,6 +19,33 @@
 </head>
 
 <body>
+    <?php
+        require('config/config.php');
+        require('config/db.php');
+
+        $employee_id = '';
+        $office_id = '';
+        $datelog='volvo';
+        $action = '';
+        $remarks = '';
+        $documentcode = '';
+
+
+        $query = "SELECT * FROM transaction WHERE  id =" . $_GET['id'];
+        
+        $result = $conn->query($query);
+
+        if($result && $result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $employee_id = $row['employee_id'];
+                $office_id = $row['office_id'];
+                $datelog = $row['datelog'];
+                $action = $row['action'];
+                $remarks = $row['remarks'];
+                $documentcode = $row['documentcode'];                
+        }
+    }
+?>
     <div class="wrapper">
         <div class="sidebar" data-image="../assets/img/sidebar-5.jpg">
             <div class="sidebar-wrapper">
@@ -28,19 +55,17 @@
         </div>
         <div class="main-panel">
             <?php include ('includes/navbar.php');?>
-            <?php 
-                require('config/config.php');
-                require('config/db.php');
+             <?php
 
                 if(isset($_POST['submit'])){
-                    $documentcode =mysqli_real_escape_string($conn,$_POST['documentcode']);
-                    $action =mysqli_real_escape_string($conn,$_POST['action']);
-                    $remarks =mysqli_real_escape_string($conn,$_POST['remarks']);
-                    $employee_id =mysqli_real_escape_string($conn,$_POST['employee_id']);
-                    $office_id =mysqli_real_escape_string($conn,$_POST['office_id']);
-
-                    $query = "INSERT INTO transaction (documentcode, action, remarks, employee_id, office_id) 
-                    VALUES('$documentcode','$action','$remarks','$employee_id','$office_id')";
+                $employee_id =mysqli_real_escape_string($conn,$_POST['employee_id']);
+                $office_id =mysqli_real_escape_string($conn,$_POST['office_id']);               
+                $datelog =mysqli_real_escape_string($conn,$_POST['datelog']);
+                $action =mysqli_real_escape_string($conn,$_POST['action']);
+                $remarks =mysqli_real_escape_string($conn,$_POST['remarks']);
+                $documentcode =mysqli_real_escape_string($conn,$_POST['documentcode']);
+                
+                $query = "UPDATE transaction SET employee_id='".$_POST['employee_id']."', office_id ='".$_POST['office_id']."', datelog ='".$_POST['datelog']."', action='".$_POST['action']."', remarks='".$_POST['remarks']."', documentcode='".$_POST['documentcode']."' WHERE id=" . $_GET['id'];
 
                     if (mysqli_query($conn, $query)){
 
@@ -57,31 +82,37 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Add New Transactions</h4>
+                                    <h4 class="card-title">Edit Transactions</h4>
                                 </div>
                                 <div class="card-body">
                                 <form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">
                                         <div class="row">
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
+                                                <label for="datelog">Date Log</label>
+                                                <input type="date" class="form-control" name="datelog" value="<?php echo $datelog ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 pr-1">
+                                                <div class="form-group">
                                                     <label>Document Code</label>
-                                                    <input name="documentcode" type="text" class="form-control">
+                                                    <input name="documentcode" type="text" class="form-control" value="<?php echo $documentcode ?>">
                                                 </div>
                                             </div>
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
                                                     <label>Action</label>
                                                     <select class="form-control" name="action">
-                                                        <option>IN</option>
-                                                        <option>OUT</option>
-                                                        <option>COMPLETE</option>
+                                                        <option <?php if ($action == 'IN') echo ' selected="selected"'; ?>>IN</option>
+                                                        <option <?php if ($action == 'OUT') echo ' selected="selected"'; ?>>OUT</option>
+                                                        <option <?php if ($action == 'COMPLETE') echo ' selected="selected"'; ?>>COMPLETE</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
                                                     <label>Remarks</label>
-                                                    <input type="text" class="form-control" name="remarks">
+                                                    <input type="text" class="form-control" name="remarks" value="<?php echo $remarks ?>">
                                                 </div>
                                             </div>
                                         <div class="col-md-4 pl-1">
@@ -95,8 +126,12 @@
                                                         $query = "SELECT id, CONCAT (lastname,',', firstname) AS employee_fullname FROM employee";
                                                         $result =mysqli_query($conn, $query);
                                                         while ($row = mysqli_fetch_array($result)){
-                                                            echo "<option value=" . $row['id'].">" . $row['employee_fullname'] . '</option>';
+                                                            if ($row['id']==$office_id){
+                                                            echo "<option value=" . $row['id'].">" . $row['employee_fullname']. " selected>" . '</option>';
+                                                        }else{
+                                                            echo "<option value=" . $row['id'].">" . $row['employee_fullname']. '</option>';
                                                         }
+                                                    }
                                                     ?>
                                                 </select>
                                             </div>
@@ -112,8 +147,12 @@
                                                         $query = "SELECT id, name FROM office";
                                                         $result =mysqli_query($conn, $query);
                                                         while ($row = mysqli_fetch_array($result)){
+                                                            if ($row['id']==$office_id){
+                                                            echo "<option value=" . $row['id']." selected>" . $row['name'] . '</option>';
+                                                        }else{
                                                             echo "<option value=" . $row['id'].">" . $row['name'] . '</option>';
                                                         }
+                                                    }
                                                     ?>
                                                 </select>
                                             </div>
@@ -124,7 +163,7 @@
 
                                          <div class="row">
                                         <button type="submit" 
-                                       name="submit" value="submit" class="btn btn-info btn-fill pull-right">Save</button>
+                                       name="submit" value="submit" class="btn btn-info btn-fill pull-right">Update</button>
                                         <div class="clearfix"></div>
                                     </form> 
                                 </div>

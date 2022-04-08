@@ -22,12 +22,15 @@
 require('config/config.php');
 require('config/db.php');
 
+
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-$results_per_page = 30;
+$results_per_page = 10;
 
 $query="SELECT * FROM transaction";
+
 $result=mysqli_query($conn, $query);
+
 $number_of_result=mysqli_num_rows($result);
 
 $number_of_page=ceil($number_of_result/$results_per_page);
@@ -46,10 +49,11 @@ if (strlen($search) > 0) {
     $query = 'SELECT CONCAT (employee.lastname,",",employee.firstname) AS employee_fullname, transaction.datelog, transaction.documentcode,transaction.action,transaction.remarks,office.name AS office_name FROM employee, office, transaction WHERE transaction.employee_id=employee.id AND transaction.office_id = office.id LIMIT '.$page_first_result.','.$results_per_page;
 }
 
-
 $result = mysqli_query($conn, $query)or die( mysqli_error($conn));
 
 $transactions = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+mysqli_free_result($result);
 
 mysqli_close($conn);
 
@@ -88,8 +92,7 @@ mysqli_close($conn);
                                 </a>
                                 </div>
                                 <div class="card-header ">
-                                    <h4 class="card-title">Transactions</h4>
-                                    <p class="card-category">Here is a subtitle for this table</p>
+                                    <h4 class="card-title">TRANSACTIONS</h4>
                                 </div>
                                 <div class="card-body table-full-width table-responsive">
                                     <table class="table table-hover table-striped">
@@ -100,18 +103,24 @@ mysqli_close($conn);
                                             <th>Office</th>
                                             <th>Employee</th>
                                             <th>Remarks</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
-                                <?php foreach($transactions as $transaction) : ?>
+                                        <?php foreach($transactions as $transaction) : ?>
                                             <tr>
-                                        <td><?php echo $transaction ['datelog']; ?></td>
-                                        <td><?php echo $transaction ['documentcode']; ?></td>
-                                        <td><?php echo $transaction ['action']; ?></td>
-                                        <td><?php echo $transaction ['office_name']; ?></td>
-                                        <td><?php echo $transaction ['employee_fullname']; ?></td>
-                                        <td><?php echo $transaction ['remarks']; ?></td>
+                                        <td><?php echo $transaction['datelog']; ?></td>
+                                        <td><?php echo $transaction['documentcode']; ?></td>
+                                        <td><?php echo $transaction['action']; ?></td>
+                                        <td><?php echo $transaction['office_name']; ?></td>
+                                        <td><?php echo $transaction['employee_fullname']; ?></td>
+                                        <td><?php echo $transaction['remarks']; ?></td>
+                                        <td>
+                                        <a href="transaction-edit.php?id=<?php echo $transaction['id']; ?>">
+                                        <button type="submit" class="btn btn-warning btn-fill pull-right">Edit</button>
+                                        </a>
+                                        </td>
                                             </tr>
-                                            <?php endforeach ?>
+                                        <?php endforeach ?>
                                         </tbody>
                                     </table>
                                 </div>

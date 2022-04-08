@@ -44,7 +44,7 @@ Direction:
 [/] Edit page for office.  
 [/] Edit page for employees. 
 
- 
-[x] Edit page for transactions. (challenge)
+2022-04-07
+[/] Edit page for transactions. (challenge)
 
 ***challenge means not included in the video***
