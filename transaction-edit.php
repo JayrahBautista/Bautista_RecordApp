@@ -23,26 +23,24 @@
         require('config/config.php');
         require('config/db.php');
 
-        $employee_id = '';
-        $office_id = '';
-        $datelog='volvo';
+        $datelog='';
+        $documentcode = '';
         $action = '';
         $remarks = '';
-        $documentcode = '';
+        $employee_id = '';
+        $office_id = '';
 
-
-        $query = "SELECT * FROM transaction WHERE  id =" . $_GET['id'];
-        
+        $query = "SELECT * FROM transaction WHERE id =" . $_GET['id'];
         $result = $conn->query($query);
 
-        if($result && $result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $employee_id = $row['employee_id'];
-                $office_id = $row['office_id'];
+        if($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
                 $datelog = $row['datelog'];
+                $documentcode = $row['documentcode'];
                 $action = $row['action'];
                 $remarks = $row['remarks'];
-                $documentcode = $row['documentcode'];                
+                $employee_id = $row['employee_id'];
+                $office_id = $row['office_id'];
         }
     }
 ?>
@@ -58,14 +56,14 @@
              <?php
 
                 if(isset($_POST['submit'])){
-                $employee_id =mysqli_real_escape_string($conn,$_POST['employee_id']);
-                $office_id =mysqli_real_escape_string($conn,$_POST['office_id']);               
-                $datelog =mysqli_real_escape_string($conn,$_POST['datelog']);
-                $action =mysqli_real_escape_string($conn,$_POST['action']);
-                $remarks =mysqli_real_escape_string($conn,$_POST['remarks']);
-                $documentcode =mysqli_real_escape_string($conn,$_POST['documentcode']);
-                
-                $query = "UPDATE transaction SET employee_id='".$_POST['employee_id']."', office_id ='".$_POST['office_id']."', datelog ='".$_POST['datelog']."', action='".$_POST['action']."', remarks='".$_POST['remarks']."', documentcode='".$_POST['documentcode']."' WHERE id=" . $_GET['id'];
+                    $datelog =mysqli_real_escape_string($conn,$_POST['datelog']);
+                    $documentcode =mysqli_real_escape_string($conn,$_POST['documentcode']);
+                    $action =mysqli_real_escape_string($conn,$_POST['action']);
+                    $remarks =mysqli_real_escape_string($conn,$_POST['remarks']);
+                    $employee_id =mysqli_real_escape_string($conn,$_POST['employee_id']);
+                    $office_id =mysqli_real_escape_string($conn,$_POST['office_id']);
+
+                    $query = "UPDATE transaction SET datelog='".$_POST['datelog']."', documentcode ='".$_POST['documentcode']."', action ='".$_POST['action']."', remarks='".$_POST['remarks']."', employee_id='".$_POST['employee_id']."', office_id='".$_POST['office_id']."'WHERE id=" . $_GET['id'];
 
                     if (mysqli_query($conn, $query)){
 
@@ -89,7 +87,7 @@
                                         <div class="row">
                                             <div class="col-md-4 pr-1">
                                                 <div class="form-group">
-                                                <label for="datelog">Date Log</label>
+                                                <label for="datelog">datelog</label>
                                                 <input type="date" class="form-control" name="datelog" value="<?php echo $datelog ?>">
                                                 </div>
                                             </div>
@@ -127,7 +125,7 @@
                                                         $result =mysqli_query($conn, $query);
                                                         while ($row = mysqli_fetch_array($result)){
                                                             if ($row['id']==$office_id){
-                                                            echo "<option value=" . $row['id'].">" . $row['employee_fullname']. " selected>" . '</option>';
+                                                            echo "<option value=" . $row['id']." selected>" . $row['employee_fullname'].  '</option>';
                                                         }else{
                                                             echo "<option value=" . $row['id'].">" . $row['employee_fullname']. '</option>';
                                                         }
@@ -151,6 +149,7 @@
                                                             echo "<option value=" . $row['id']." selected>" . $row['name'] . '</option>';
                                                         }else{
                                                             echo "<option value=" . $row['id'].">" . $row['name'] . '</option>';
+
                                                         }
                                                     }
                                                     ?>

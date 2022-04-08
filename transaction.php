@@ -28,9 +28,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $results_per_page = 10;
 
 $query="SELECT * FROM transaction";
-
 $result=mysqli_query($conn, $query);
-
 $number_of_result=mysqli_num_rows($result);
 
 $number_of_page=ceil($number_of_result/$results_per_page);
@@ -44,9 +42,9 @@ if (!isset($_GET['page'])) {
 $page_first_result=($page-1) * $results_per_page;
 
 if (strlen($search) > 0) {
-    $query = 'SELECT CONCAT (employee.lastname,",",employee.firstname) AS employee_fullname, transaction.datelog, transaction.documentcode,transaction.action,transaction.remarks,office.name AS office_name FROM employee, office, transaction WHERE transaction.employee_id=employee.id AND transaction.office_id = office.id AND transaction.documentcode ='. $search .' ORDER BY transaction.documentcode, transaction.datelog LIMIT '.$page_first_result.','.$results_per_page;
+    $query = 'SELECT CONCAT (employee.lastname,",",employee.firstname) AS employee_fullname,  transaction.id, transaction.datelog, transaction.documentcode,transaction.action,transaction.remarks,office.name AS office_name FROM employee, office, transaction WHERE transaction.employee_id=employee.id AND transaction.office_id = office.id AND transaction.documentcode ='. $search .' ORDER BY transaction.documentcode, transaction.datelog LIMIT '.$page_first_result.','.$results_per_page;
 }else{
-    $query = 'SELECT CONCAT (employee.lastname,",",employee.firstname) AS employee_fullname, transaction.datelog, transaction.documentcode,transaction.action,transaction.remarks,office.name AS office_name FROM employee, office, transaction WHERE transaction.employee_id=employee.id AND transaction.office_id = office.id LIMIT '.$page_first_result.','.$results_per_page;
+    $query = 'SELECT CONCAT (employee.lastname,",",employee.firstname) AS employee_fullname, transaction.id, transaction.datelog, transaction.documentcode,transaction.action,transaction.remarks,office.name AS office_name FROM employee, office, transaction WHERE transaction.employee_id=employee.id AND transaction.office_id = office.id LIMIT '.$page_first_result.','.$results_per_page;
 }
 
 $result = mysqli_query($conn, $query)or die( mysqli_error($conn));
@@ -74,7 +72,7 @@ mysqli_close($conn);
                     <div class="section">
                     </div>
                     <div class="row">
-                <div class="content">
+                                    <div class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
@@ -82,7 +80,7 @@ mysqli_close($conn);
                                 <br/>
                                 <div class="col-md-12">
                                     <form action="transaction.php" method="GET">
-                                        <input type="text" name="search" />
+                                        <input type="text" name="search" >
                                         <input type="submit" value="Search" class="btn btn-info btn-fill" />
                                     </form>   
                                 </div>
@@ -103,24 +101,28 @@ mysqli_close($conn);
                                             <th>Office</th>
                                             <th>Employee</th>
                                             <th>Remarks</th>
-                                            <th>Action</th>
                                         </thead>
                                         <tbody>
-                                        <?php foreach($transactions as $transaction) : ?>
+                              
+                                        <?php 
+                                        foreach($transactions as $transaction) : ?>
                                             <tr>
-                                        <td><?php echo $transaction['datelog']; ?></td>
-                                        <td><?php echo $transaction['documentcode']; ?></td>
-                                        <td><?php echo $transaction['action']; ?></td>
-                                        <td><?php echo $transaction['office_name']; ?></td>
-                                        <td><?php echo $transaction['employee_fullname']; ?></td>
-                                        <td><?php echo $transaction['remarks']; ?></td>
+                                        <td><?php echo $transaction ['datelog']; ?></td>
+                                        <td><?php echo $transaction ['documentcode']; ?></td>
+                                        <td><?php echo $transaction ['action']; ?></td>
+                                        <td><?php echo $transaction ['office_name']; ?></td>
+                                        <td><?php echo $transaction ['employee_fullname']; ?></td>
+                                        <td><?php echo $transaction ['remarks']; ?></td>
                                         <td>
-                                        <a href="transaction-edit.php?id=<?php echo $transaction['id']; ?>">
-                                        <button type="submit" class="btn btn-warning btn-fill pull-right">Edit</button>
-                                        </a>
+                                        <td>
+                                            <a href="transaction-edit.php?id=<?php echo $transaction['id'] ?>">
+                                            <button type="submit" class="btn btn-warning btn-fill pull-right">Edit</button>
+                                            </a>
                                         </td>
+                                        </td>
+
                                             </tr>
-                                        <?php endforeach ?>
+                                            <?php endforeach ?>
                                         </tbody>
                                     </table>
                                 </div>
